@@ -32,10 +32,6 @@ class PhotoViewModel constructor(
 
     private fun fetchRecentPhotos() = viewModelScope.launch {
         _uiState.emit(flickrViewStateFactory.loading(currentPage))
-        if (searchTerm.isNullOrEmpty()) {
-            currentPage = 1
-            searchTerm = null
-        }
         emitResult(flickrRepository.getRecentPhotos(currentPage))
     }
 
@@ -46,7 +42,7 @@ class PhotoViewModel constructor(
             searchTerm = query
         }
         if (searchTerm.isNullOrEmpty()) {
-            fetchRecentPhotos()
+            emitResult(flickrRepository.getRecentPhotos(currentPage))
         } else {
             emitResult(flickrRepository.searchPhotos(query, currentPage))
         }
